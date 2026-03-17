@@ -21,6 +21,9 @@ private:
     int lastChecked;
     int nextReplace;
 
+    int pageFault;
+    int pageHit;
+
 public:
     PagedArray(std::string filename, int pSize, int pCount)
     {
@@ -36,6 +39,8 @@ public:
         file.open(filename, std::ios::in | std::ios::out | std::ios::binary);
         lastChecked = -1;
         nextReplace = 0;
+        pageFault = 0;
+        pageHit = 0;
     }
 
     int& operator[](int index)
@@ -54,11 +59,13 @@ public:
         {
             if (ram[i].number == pageNum)
             {
+                pageHit++;
                 lastChecked = i;
                 return ram[i].data[offset];
             }
         }
 
+        pageFault++;
         // Si aún hay espacio en RAM
         if (loadedPages < pageCount)
         {
@@ -104,6 +111,16 @@ public:
         nextReplace = (nextReplace + 1) % pageCount;
 
         return ram[lastChecked].data[offset];
+    }
+
+    int faults()
+    {
+        return pageFault;
+    }
+
+    int hits()
+    {
+        return pageHit;
     }
 
     ~PagedArray()
