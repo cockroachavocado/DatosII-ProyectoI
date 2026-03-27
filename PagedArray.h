@@ -10,19 +10,21 @@ private:
     {
         int number;
         int* data;
+        bool changed;
     };
 
     std::fstream file;
     int pageSize; // enteros por página
-    int pageCount; // páginas en la RAM
+    int pageCount; // cantidad de páginas en RAM
 
-    Page* ram;
+    Page* ram; // páginas cargadas en RAM
     int loadedPages;
-    int lastChecked;
     int nextReplace;
 
-    int pageFault;
-    int pageHit;
+    long fileSize;
+
+    long long pageFault;
+    long long pageHit; // Por si llega a ser muy alto, para evitar overflow se utiliza long long
 
 public:
     PagedArray(std::string filename, int pSize, int pCount)
@@ -35,12 +37,14 @@ public:
         {
             ram[i].number = -1;
             ram[i].data = nullptr;
+            ram[i].changed = false;
         }
         file.open(filename, std::ios::in | std::ios::out | std::ios::binary);
-        lastChecked = -1;
         nextReplace = 0;
         pageFault = 0;
         pageHit = 0;
+        file.seekg(0, std::ios::end);
+        fileSize = file.tellg();
     }
 
     int& operator[](int index)
@@ -48,77 +52,64 @@ public:
         int pageNum = index / pageSize;
         int offset = index % pageSize;
 
-        // Cache rápida
-        if (lastChecked != -1 && ram[lastChecked].number == pageNum)
-        {
-            return ram[lastChecked].data[offset];
-        }
-
-        // Buscar página en RAM
+        // Buscar en RAM
         for (int i = 0; i < loadedPages; i++)
         {
             if (ram[i].number == pageNum)
             {
                 pageHit++;
-                lastChecked = i;
+                ram[i].changed = true;
                 return ram[i].data[offset];
             }
         }
 
         pageFault++;
-        // Si aún hay espacio en RAM
+
+        int slot;
+
         if (loadedPages < pageCount)
         {
-            ram[loadedPages].number = pageNum;
-            ram[loadedPages].data = new int[pageSize];
-
-            long pos = (long)pageNum * pageSize * sizeof(int);
-
-            file.seekg(pos, std::ios::beg);
-            file.read(reinterpret_cast<char*>(ram[loadedPages].data),
-                      pageSize * sizeof(int));
-
-            lastChecked = loadedPages;
+            slot = loadedPages;
             loadedPages++;
+        }
+        else
+        {
+            slot = nextReplace;
 
-            return ram[lastChecked].data[offset];
+            // Guardar página vieja
+            if (ram[slot].changed)
+            {
+                long oldPos = (long)ram[slot].number * pageSize * sizeof(int);
+                file.seekp(oldPos);
+                file.write(reinterpret_cast<char*>(ram[slot].data), pageSize * sizeof(int));
+                ram[slot].changed = false;
+            }
+            delete[] ram[slot].data;
+
+            nextReplace = (nextReplace + 1) % pageCount;
         }
 
-        // Reemplazo FIFO
-        int victim = nextReplace;
-
-        // Guardar página vieja
-        long oldPos = (long)ram[victim].number * pageSize * sizeof(int);
-
-        file.seekp(oldPos, std::ios::beg);
-        file.write(reinterpret_cast<char*>(ram[victim].data),
-                   pageSize * sizeof(int));
-
-        delete[] ram[victim].data;
-
         // Cargar nueva página
-        ram[victim].number = pageNum;
-        ram[victim].data = new int[pageSize];
+        ram[slot].number = pageNum;
+        ram[slot].data = new int[pageSize];
 
         long pos = (long)pageNum * pageSize * sizeof(int);
 
-        file.seekg(pos, std::ios::beg);
-        file.read(reinterpret_cast<char*>(ram[victim].data),
-                  pageSize * sizeof(int));
+        long bytes = pageSize * sizeof(int);
+        if (pos + bytes > fileSize) bytes = fileSize - pos;
 
-        lastChecked = victim;
+        file.seekg(pos);
+        file.read(reinterpret_cast<char*>(ram[slot].data), bytes);
 
-        nextReplace = (nextReplace + 1) % pageCount;
-
-        return ram[lastChecked].data[offset];
+        return ram[slot].data[offset];
     }
 
-    int faults()
+    long long faults()
     {
         return pageFault;
     }
 
-    int hits()
+    long long hits()
     {
         return pageHit;
     }
@@ -129,9 +120,12 @@ public:
         {
             long pos = (long)ram[i].number * pageSize * sizeof(int);
 
+            long bytes = pageSize * sizeof(int);
+            if (pos + bytes > fileSize)
+                bytes = fileSize - pos;
+
             file.seekp(pos, std::ios::beg);
-            file.write(reinterpret_cast<char*>(ram[i].data),
-                       pageSize * sizeof(int));
+            file.write(reinterpret_cast<char*>(ram[i].data), bytes);
 
             delete[] ram[i].data;
         }

@@ -68,9 +68,6 @@ int main(int argc, char* argv[])
 
     size_t totalNumbers = std::filesystem::file_size(destiny) / sizeof(int); // Requerido para los algoritmos de ordenamiento
 
-    int pageFaults;
-    int pageHits;
-
     if (alg == "QUICKSORT")
     {
         PagedArray pags(destiny.string(), pageSize, pageCount);
@@ -78,9 +75,10 @@ int main(int argc, char* argv[])
         quickSort(pags, 0, totalNumbers - 1);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-        pageFaults = pags.faults();
-        pageHits = pags.hits();
-        summary(destiny, duration, "quick sort", pageFaults, pageHits);
+        long long time = duration.count();
+        long long pageFaults = pags.faults();
+        long long pageHits = pags.hits();
+        summary(origin.stem().string() + " - summary.txt", time, "quick sort", pageFaults, pageHits);
     }
     else if (alg == "BUBBLESORT")
     {
@@ -89,9 +87,10 @@ int main(int argc, char* argv[])
         bubbleSort(pags, totalNumbers);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-        pageFaults = pags.faults();
-        pageHits = pags.hits();
-        summary(destiny, duration, "bubble sort", pageFaults, pageHits);
+        long long time = duration.count();
+        long long pageFaults = pags.faults();
+        long long pageHits = pags.hits();
+        summary(origin.stem().string() + " - summary.txt", time, "bubble sort", pageFaults, pageHits);
     }
     else if (alg == "SELECTIONSORT")
     {
@@ -100,9 +99,10 @@ int main(int argc, char* argv[])
         selectionSort(pags, totalNumbers);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-        pageFaults = pags.faults();
-        pageHits = pags.hits();
-        summary(destiny, duration, "selection sort", pageFaults, pageHits);
+        long long time = duration.count();
+        long long pageFaults = pags.faults();
+        long long pageHits = pags.hits();
+        summary(origin.stem().string() + " - summary.txt", time, "selection sort", pageFaults, pageHits);
     }
     else if (alg == "INSERTIONSORT")
     {
@@ -111,9 +111,10 @@ int main(int argc, char* argv[])
         insertionSort(pags, totalNumbers);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-        pageFaults = pags.faults();
-        pageHits = pags.hits();
-        summary(destiny, duration, "insertion sort", pageFaults, pageHits);
+        long long time = duration.count();
+        long long pageFaults = pags.faults();
+        long long pageHits = pags.hits();
+        summary(origin.stem().string() + " - summary.txt", time, "insertion sort", pageFaults, pageHits);
     }
     else if (alg == "SHELLSORT")
     {
@@ -122,9 +123,10 @@ int main(int argc, char* argv[])
         shellSort(pags, totalNumbers);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
-        pageFaults = pags.faults();
-        pageHits = pags.hits();
-        summary(destiny, duration, "shell sort", pageFaults, pageHits);
+        long long time = duration.count();
+        long long pageFaults = pags.faults();
+        long long pageHits = pags.hits();
+        summary(origin.stem().string() + " - summary.txt", time, "shell sort", pageFaults, pageHits);
     }
     binarioATxt(destiny.string(), destiny.stem().string() + ".txt");
 }
