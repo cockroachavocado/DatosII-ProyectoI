@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
             else if (size == "LARGE") enteros = 268435456;
             else
             {
-                std::cout << "Error, tamaño no válido";
+                std::cout << "Error, tamano no valido";
                 return 0;
             }
         }
@@ -41,12 +41,12 @@ int main(int argc, char* argv[]) {
     }
 
     if (!file) {
-        std::cout << "Error, dirección no válida\n";
+        std::cout << "Error, direccion no valida\n";
         return 0;
     }
 
     const int num = 1000000;
-    int* buffer = new int[num]; // Utilizo un buffer para la eficiencia
+    int* buffer = new int[num]; // Uso de buffer para la eficiencia
 
     std::mt19937 rng(std::random_device{}()); // Función random
     std::uniform_int_distribution<int> dist(0, 2147483647); // Puede albergar todos los números desde 0 hasta el máximo de int

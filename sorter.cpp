@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <ctime>
 #include <cctype>
-#include <algorithm> // Para std::swap
 #include <chrono> // Para el tiempo
 #include <filesystem> // Para copiar archivos
 
@@ -74,7 +73,7 @@ int main(int argc, char* argv[])
         auto start = std::chrono::high_resolution_clock::now();
         quickSort(pags, 0, totalNumbers - 1);
         auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
         long long time = duration.count();
         long long pageFaults = pags.faults();
         long long pageHits = pags.hits();
@@ -86,7 +85,7 @@ int main(int argc, char* argv[])
         auto start = std::chrono::high_resolution_clock::now();
         bubbleSort(pags, totalNumbers);
         auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
         long long time = duration.count();
         long long pageFaults = pags.faults();
         long long pageHits = pags.hits();
@@ -98,7 +97,7 @@ int main(int argc, char* argv[])
         auto start = std::chrono::high_resolution_clock::now();
         selectionSort(pags, totalNumbers);
         auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
         long long time = duration.count();
         long long pageFaults = pags.faults();
         long long pageHits = pags.hits();
@@ -110,7 +109,7 @@ int main(int argc, char* argv[])
         auto start = std::chrono::high_resolution_clock::now();
         insertionSort(pags, totalNumbers);
         auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
         long long time = duration.count();
         long long pageFaults = pags.faults();
         long long pageHits = pags.hits();
@@ -122,7 +121,7 @@ int main(int argc, char* argv[])
         auto start = std::chrono::high_resolution_clock::now();
         shellSort(pags, totalNumbers);
         auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
         long long time = duration.count();
         long long pageFaults = pags.faults();
         long long pageHits = pags.hits();
