@@ -101,9 +101,30 @@ void insertionSort(PagedArray& v, int n) {
     }
 }
 
+int medianOfThree(PagedArray& v, int low, int high)
+{
+    int mid = low + (high - low) / 2;
+
+    int a = v[low];
+    int b = v[mid];
+    int c = v[high];
+
+    if ((a <= b && b <= c) || (c <= b && b <= a)) return mid;
+    if ((b <= a && a <= c) || (c <= a && a <= b)) return low;
+    return high;
+}
+
 int partition(PagedArray& v, int low, int high)
 {
-    int pivot = v[high];
+    int pivotIndex = medianOfThree(v, low, high);
+    int pivot = v[pivotIndex];
+
+    int tempPivot = v[high];
+    v[high] = pivot;
+    v[pivotIndex] = tempPivot;
+
+    pivot = v[high];
+
     int i = low - 1;
 
     for (int j = low; j < high; j++)

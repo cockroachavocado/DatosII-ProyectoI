@@ -35,19 +35,27 @@ int main(int argc, char* argv[])
             alg = argv[++i];
             if (alg != "QUICKSORT" && alg != "BUBBLESORT" && alg != "SELECTIONSORT" && alg != "INSERTIONSORT" && alg != "SHELLSORT")
             {
-                std::cout << "Error, el algoritmo proporcionado no es válido";
+                std::cout << "Error, el algoritmo proporcionado no es valido";
                 return 0;
             }
         }
         else if (arg == "-pageSize" && i + 1 < argc) {
             pSize = argv[++i];
             if (isValidInt(pSize)) pageSize = atoi(pSize.c_str());
-            if (pageSize < 1) std::cout << "Ingrese un entero no negativo para la cantidad de enteros por página";
+            if (pageSize < 1)
+            {
+                std::cout << "Ingrese un entero no negativo para la cantidad de enteros por pagina";
+                return 0;
+            }
         }
         else if (arg == "-pageCount" && i + 1 < argc) {
             pCount = argv[++i];
             if (isValidInt(pCount)) pageCount = atoi(pCount.c_str());
-            if (pageCount < 1) std::cout << "Ingrese un entero no negativo para la cantidad de páginas";
+            if (pageCount < 1)
+            {
+                std::cout << "Ingrese un entero no negativo para la cantidad de paginas";
+                return 0;
+            }
         }
     }
 
