@@ -1,1 +1,17 @@
 # DatosII-ProyectoI
+
+El presente repositorio corresponde al proyecto *Arreglos paginados*, realizado por el estudiante Esteban Mauricio López Brenes, de la carrera de Ingeniería en Computadores del Instituto Tecnológico de Costa Rica para el curso Algoritmos y Estructuras de Datos II (CE2103)
+
+Este repositorio contiene diversos archivos necesarios para el funcionamiento del proyecto, las funciones de cada uno se describen a continuación.
+- PagedArray.h es el archivo de la clase PagedArray, clase implementada para el funcionamiento del proyecto.
+- functions.cpp posee varias funciones útiles para el proyecto, así como los algoritmos de ordenamiento utilizados en él. Los algoritmos de ordenamiento son bubble sort, insertion sort, selection sort, shell sort y quick sort.
+- generator.cpp es el generador de archivos.
+- sorter.cpp es el ordenador de archivos.
+
+Para ejecutar el proyecto, se realiza de la siguiente forma (NOTA: es necesario poseer un compilador como g++ instalado en la computadora).
+1. Abrir la terminal en dirección de la carpeta en la que se localice el proyecto.
+2. Crear el exe de generator.cpp, se realiza ejecutando en la terminal <g++ generator.cpp -o **nombre**.exe>; el nombre del archivo exe queda a criterio del usuario, aunque es recomendable que sea generator.exe para mantener todo ordenado, en el siguiente paso se asumirá que se utilizó el nombre generator.exe.
+3. Crear un archivo utilizando generator.exe, esto se realiza ejecutando en la terminal <.\generator.exe -size **tamaño** -output **dirección**>; -size puede variar entre SMALL, MEDIUM y LARGE, cualquier otra forma dará como resultado un error; -output es una ruta en la computadora, como ejemplo C:\Users\user\OneDrive\Escritorio\hello (donde el último \ proporciona el nombre del archivo que se creará), cuya dirección creará un archivo hello en la dirección proporcionada, aunque también se puede colocar solo el nombre deseado del archivo, lo cual creará el archivo en la misma carpeta donde se tiene el proyecto.
+4. Crear el exe de sorter.cpp de forma análoga al de generator.cpp, de igual forma, se asumirá que se creó el exe con el nombre "sorter.exe".
+5. Ejecutar soter.exe de la siguiente forma <.\sorter.exe -input **dirección del input** -output **dirección del output** -alg **algoritmo deseado**> -pageSize **tamaño de páginas** -pageCount **número de páginas**>. -input corresponde a la dirección del archivo que se desea ordenar, si el archivo está en la misma carpeta que el proyecto, se puede colocar solo el nombre del msimo; -output corresponde a la dirección donde se creará la copia ordenada del archivo junto al resumen de lo ocurrido y un txt legible de los números ordenados; -alg corresponde al algoritmo de ordenamiento que el usuario desee utilizar, cuyos únicos valores correctos son "BUBBLESORT", "INSERTIONSORT", "SELECTIONSORT", "SHELLSORT" y "QUICKSORT", sin las comillas, cualquier otro valor dará un error; -pageSize corresponde a un entero positivo que le dice al programa el tamaño que las páginas deberán tener; finalmente, pageCount corresponde a un entero positivo que le dice al programa la cantidad máxima de páginas que se almacenarán en RAM.
+6. Finalmente, sorter.exe creará tres archivos en -output, los cuales son una copia del archivo original con los números ordenados, un archivo txt de los números ordenados separados por comas y un archivo txt de un resumen que contiene el tiempo de ejecución, el algoritmo utilizado, la cantidad de page faults y la cantidad de pagehits.
