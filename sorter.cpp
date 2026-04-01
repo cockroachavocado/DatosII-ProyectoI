@@ -67,13 +67,13 @@ int main(int argc, char* argv[])
 
     std::filesystem::path origin = input;
 
-    std::filesystem::path destiny =
-        std::filesystem::path(output) /
-        (origin.stem().string() + " - copy" + origin.extension().string());
+    std::filesystem::path destiny = std::filesystem::path(output) / (origin.stem().string() + " - copy" + origin.extension().string());
 
-    std::filesystem::copy_file(origin, destiny);
+    std::filesystem::copy_file(origin, destiny); // Copia del archivo en la ruta de output
 
     size_t totalNumbers = std::filesystem::file_size(destiny) / sizeof(int); // Requerido para los algoritmos de ordenamiento
+
+    std::filesystem::path summaryPath = destiny.parent_path() / (destiny.stem().string() + " - summary.txt"); // Para crear el resumen en la ruta correcta
 
     if (alg == "QUICKSORT")
     {
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
         long long time = duration.count();
         long long pageFaults = pags.faults();
         long long pageHits = pags.hits();
-        summary(origin.stem().string() + " - summary.txt", time, "quick sort", pageFaults, pageHits);
+        summary(summaryPath.string(), time, "quick sort", pageFaults, pageHits);
     }
     else if (alg == "BUBBLESORT")
     {
@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
         long long time = duration.count();
         long long pageFaults = pags.faults();
         long long pageHits = pags.hits();
-        summary(origin.stem().string() + " - summary.txt", time, "bubble sort", pageFaults, pageHits);
+        summary(summaryPath.string(), time, "bubble sort", pageFaults, pageHits);
     }
     else if (alg == "SELECTIONSORT")
     {
@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
         long long time = duration.count();
         long long pageFaults = pags.faults();
         long long pageHits = pags.hits();
-        summary(origin.stem().string() + " - summary.txt", time, "selection sort", pageFaults, pageHits);
+        summary(summaryPath.string(), time, "selection sort", pageFaults, pageHits);
     }
     else if (alg == "INSERTIONSORT")
     {
@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
         long long time = duration.count();
         long long pageFaults = pags.faults();
         long long pageHits = pags.hits();
-        summary(origin.stem().string() + " - summary.txt", time, "insertion sort", pageFaults, pageHits);
+        summary(summaryPath.string(), time, "insertion sort", pageFaults, pageHits);
     }
     else if (alg == "SHELLSORT")
     {
@@ -133,7 +133,8 @@ int main(int argc, char* argv[])
         long long time = duration.count();
         long long pageFaults = pags.faults();
         long long pageHits = pags.hits();
-        summary(origin.stem().string() + " - summary.txt", time, "shell sort", pageFaults, pageHits);
+        summary(summaryPath.string(), time, "shell sort", pageFaults, pageHits);
     }
-    binarioATxt(destiny.string(), destiny.stem().string() + ".txt");
+    std::filesystem::path txtPath = destiny.parent_path() / (destiny.stem().string() + ".txt"); // Para crear el txt legible en la ruta correcta
+    binarioATxt(destiny.string(), txtPath.string());
 }

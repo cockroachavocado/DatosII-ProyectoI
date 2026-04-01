@@ -61,6 +61,7 @@ public:
             if (ram[i].number == pageNum)
             {
                 pageHit++;
+                ram[i].changed = true;
                 ram[i].used = true;
                 return ram[i].data[offset];
             }

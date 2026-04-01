@@ -45,30 +45,13 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    const int num = 1000000;
-    int* buffer = new int[num]; // Uso de buffer para la eficiencia
-
     std::mt19937 rng(std::random_device{}()); // Función random
     std::uniform_int_distribution<int> dist(0, 2147483647); // Puede albergar todos los números desde 0 hasta el máximo de int
 
-	const int block = enteros / num;
-	const int remainder = enteros % num;
-
-    for (int n = 0; n < block; n++) {
-        for (int i = 0; i < num; i++) {
-            buffer[i] = dist(rng);
-        }
-        file.write(reinterpret_cast<char*>(buffer), num * sizeof(int));
+    for (int n = 0; n < enteros; n++) {
+        int value = dist(rng);
+        file.write(reinterpret_cast<char*>(&value), sizeof(int));
     }
-
-	if (remainder > 0) { // Esto es porque la división no es exacta
-        for (int i = 0; i < remainder; i++) {
-            buffer[i] = dist(rng);
-        }
-	    file.write(reinterpret_cast<char*>(buffer), remainder * sizeof(int));
-	}
-
-    delete[] buffer;
 
     file.close();
 
