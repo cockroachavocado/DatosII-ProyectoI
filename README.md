@@ -1,6 +1,6 @@
 # DatosII-ProyectoI
 
-El presente repositorio corresponde al proyecto *Arreglos paginados*, realizado por el estudiante Esteban Mauricio López Brenes, de la carrera de Ingeniería en Computadores del Instituto Tecnológico de Costa Rica para el curso Algoritmos y Estructuras de Datos II (CE2103)
+El presente repositorio corresponde al proyecto *Arreglos paginados* para el curso Algoritmos y Estructuras de Datos II (CE2103)
 
 Este repositorio contiene diversos archivos necesarios para el funcionamiento del proyecto, las funciones de cada uno se describen a continuación.
 - PagedArray.h es el archivo de la clase PagedArray, clase implementada para el funcionamiento del proyecto.
