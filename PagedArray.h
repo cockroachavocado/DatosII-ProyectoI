@@ -12,7 +12,6 @@ private:
         int number;
         int* data;
         bool changed;
-        bool used;
     };
 
     std::fstream file;
@@ -40,7 +39,6 @@ public:
             ram[i].number = -1;
             ram[i].data = nullptr;
             ram[i].changed = false;
-            ram[i].used = false;
         }
         file.open(filename, std::ios::in | std::ios::out | std::ios::binary);
         nextReplace = 0;
@@ -62,7 +60,6 @@ public:
             {
                 pageHit++;
                 ram[i].changed = true;
-                ram[i].used = true;
                 return ram[i].data[offset];
             }
         }
@@ -78,51 +75,37 @@ public:
         }
         else
         {
-            while (true)
-            {
-                if (!ram[nextReplace].used)
-                {
-                    slot = nextReplace;
-                    break;
-                }
-
-                ram[nextReplace].used = false;
-                nextReplace = (nextReplace + 1) % pageCount;
-            }
-
-            // Guardar página vieja solo en caso de haberse modificado
-            if (ram[slot].changed)
-            {
-                long oldPos = (long)ram[slot].number * pageSize * sizeof(int);
-
-                long bytes = pageSize * sizeof(int);
-                if (oldPos + bytes > fileSize) bytes = fileSize - oldPos;
-
-                file.seekp(oldPos);
-                file.write(reinterpret_cast<char*>(ram[slot].data), bytes);
-
-                ram[slot].changed = false;
-            }
-
-            delete[] ram[slot].data;
-
+            slot = nextReplace;
             nextReplace = (nextReplace + 1) % pageCount;
         }
+        // Escribe si cambió
+        if (ram[slot].number != -1 && ram[slot].changed)
+        {
+            long oldPos = (long)ram[slot].number * pageSize * 4;
 
-        // Cargar nueva página
-        ram[slot].number = pageNum;
+            long bytes = pageSize * 4;
+            if (oldPos + bytes > fileSize) bytes = fileSize - oldPos;
+
+            file.seekp(oldPos);
+            file.write(reinterpret_cast<char*>(ram[slot].data), bytes);
+
+            ram[slot].changed = false;
+        }
+
+        delete[] ram[slot].data;
         ram[slot].data = new int[pageSize];
 
-        long pos = (long)pageNum * pageSize * sizeof(int);
-
-        long bytes = pageSize * sizeof(int);
+        long pos = (long)pageNum * pageSize * 4;
+        long bytes = pageSize * 4;
         if (pos + bytes > fileSize) bytes = fileSize - pos;
 
+        std::fill(ram[slot].data, ram[slot].data + pageSize, 0);
         file.seekg(pos);
         file.read(reinterpret_cast<char*>(ram[slot].data), bytes);
 
-        ram[slot].used = true;
+        ram[slot].number = pageNum;
         ram[slot].changed = false;
+
         return ram[slot].data[offset];
     }
 
@@ -142,8 +125,8 @@ public:
         {
             if (ram[i].changed)
             {
-                long pos = (long)ram[i].number * pageSize * sizeof(int);
-                long bytes = pageSize * sizeof(int);
+                long pos = (long)ram[i].number * pageSize * 4;
+                long bytes = pageSize * 4;
                 if (pos + bytes > fileSize) bytes = fileSize - pos;
                 file.seekp(pos, std::ios::beg);
                 file.write(reinterpret_cast<char*>(ram[i].data), bytes);

@@ -75,25 +75,18 @@ void selectionSort(PagedArray& v, int n) {
     }
 }
 
-void bubbleSort(PagedArray& v, int n) {
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (v[j] > v[j + 1]) {
-                int temp = v[j];
-                v[j] = v[j + 1];
-                v[j + 1] = temp;
-            }
-        }
-    }
-}
-
-void insertionSort(PagedArray& v, int n) {
-    for (int i = 1; i < n; i++) {
-        int key = v[i];
+void insertionSort(PagedArray& v, int low, int high) {
+    for (int i = low + 1; i <= high; i++)
+    {
+        int key = v[i];  // 1 acceso
         int j = i - 1;
 
-        while (j >= 0 && v[j] > key) {
-            v[j + 1] = v[j];
+        while (j >= low)
+        {
+            int val = v[j];  // cacheo
+            if (val <= key) break;
+
+            v[j + 1] = val;
             j--;
         }
 
@@ -101,69 +94,34 @@ void insertionSort(PagedArray& v, int n) {
     }
 }
 
-int medianOfThree(PagedArray& v, int low, int high)
-{
-    int mid = low + (high - low) / 2;
+void quickSort(PagedArray &arr, int low, int high) {
+    if (low < high) {
+        int pivot = low;
+        int pivotValue = arr[pivot];
 
-    int a = v[low];
-    int b = v[mid];
-    int c = v[high];
+        int i = low;
+        int j = high;
 
-    if ((a <= b && b <= c) || (c <= b && b <= a)) return mid;
-    if ((b <= a && a <= c) || (c <= a && a <= b)) return low;
-    return high;
-}
+        while (i < j) {
+            while (i <= high && arr[i] <= pivotValue)
+                i++;
 
-int partition(PagedArray& v, int low, int high)
-{
-    int pivotIndex = medianOfThree(v, low, high);
-    int pivot = v[pivotIndex];
+            while (j >= low && arr[j] > pivotValue)
+                j--;
 
-    int tempPivot = v[high];
-    v[high] = pivot;
-    v[pivotIndex] = tempPivot;
-
-    pivot = v[high];
-
-    int i = low - 1;
-
-    for (int j = low; j < high; j++)
-    {
-        int current = v[j];
-
-        if (current < pivot)
-        {
-            i++;
-
-            int temp = v[i];
-            v[i] = current;
-            v[j] = temp;
+            if (i < j) {
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
         }
-    }
 
-    int temp = v[i + 1];
-    v[i + 1] = v[high];
-    v[high] = temp;
+        int temp = arr[j];
+        arr[j] = arr[pivot];
+        arr[pivot] = temp;
 
-    return i + 1;
-}
-
-void quickSort(PagedArray& v, int low, int high)
-{
-    while (low < high)
-    {
-        int pi = partition(v, low, high);
-
-        if (pi - low < high - pi)
-        {
-            quickSort(v, low, pi - 1);
-            low = pi + 1;
-        }
-        else
-        {
-            quickSort(v, pi + 1, high);
-            high = pi - 1;
-        }
+        quickSort(arr, low, j - 1);
+        quickSort(arr, j + 1, high);
     }
 }
 
@@ -189,5 +147,47 @@ void shellSort(PagedArray& v, int n)
 
             v[j] = temp;
         }
+    }
+}
+
+void count_sort_byte(PagedArray &arr, int n, int shift)
+{
+    int count[256] = {0};
+
+    // Contar frecuencias
+    for (int i = 0; i < n; i++) {
+        int val = arr[i];
+        int byte = (val >> shift) & 0xFF;
+        count[byte]++;
+    }
+
+    // Prefix sum
+    for (int i = 1; i < 256; i++) {
+        count[i] += count[i - 1];
+    }
+
+    int* output = new int[n];
+
+    // Construcción (de atrás hacia adelante)
+    for (int i = n - 1; i >= 0; i--) {
+        int val = arr[i];
+        int byte = (val >> shift) & 0xFF;
+        output[--count[byte]] = val;
+    }
+
+    // Copiar de vuelta
+    for (int i = 0; i < n; i++) {
+        arr[i] = output[i];
+    }
+
+    delete[] output;
+}
+
+void radixSort(PagedArray &arr, int n)
+{
+    // 4 pasadas (32 bits / 8 bits)
+    for (int shift = 0; shift < 32; shift += 8)
+    {
+        count_sort_byte(arr, n, shift);
     }
 }

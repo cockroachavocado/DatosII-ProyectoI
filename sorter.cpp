@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
         }
         else if (arg == "-alg" && i + 1 < argc) {
             alg = argv[++i];
-            if (alg != "QUICKSORT" && alg != "BUBBLESORT" && alg != "SELECTIONSORT" && alg != "INSERTIONSORT" && alg != "SHELLSORT")
+            if (alg != "QUICKSORT" && alg != "SELECTIONSORT" && alg != "INSERTIONSORT" && alg != "SHELLSORT" && alg != "RADIXSORT")
             {
                 std::cout << "Error, el algoritmo proporcionado no es valido";
                 return 0;
@@ -87,18 +87,6 @@ int main(int argc, char* argv[])
         long long pageHits = pags.hits();
         summary(summaryPath.string(), time, "quick sort", pageFaults, pageHits);
     }
-    else if (alg == "BUBBLESORT")
-    {
-        PagedArray pags(destiny.string(), pageSize, pageCount);
-        auto start = std::chrono::high_resolution_clock::now();
-        bubbleSort(pags, totalNumbers);
-        auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-        long long time = duration.count();
-        long long pageFaults = pags.faults();
-        long long pageHits = pags.hits();
-        summary(summaryPath.string(), time, "bubble sort", pageFaults, pageHits);
-    }
     else if (alg == "SELECTIONSORT")
     {
         PagedArray pags(destiny.string(), pageSize, pageCount);
@@ -115,7 +103,7 @@ int main(int argc, char* argv[])
     {
         PagedArray pags(destiny.string(), pageSize, pageCount);
         auto start = std::chrono::high_resolution_clock::now();
-        insertionSort(pags, totalNumbers);
+        insertionSort(pags, 0, totalNumbers - 1);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
         long long time = duration.count();
@@ -134,6 +122,18 @@ int main(int argc, char* argv[])
         long long pageFaults = pags.faults();
         long long pageHits = pags.hits();
         summary(summaryPath.string(), time, "shell sort", pageFaults, pageHits);
+    }
+    else if (alg == "RADIXSORT")
+    {
+        PagedArray pags(destiny.string(), pageSize, pageCount);
+        auto start = std::chrono::high_resolution_clock::now();
+        radixSort(pags, totalNumbers);
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+        long long time = duration.count();
+        long long pageFaults = pags.faults();
+        long long pageHits = pags.hits();
+        summary(summaryPath.string(), time, "radix sort", pageFaults, pageHits);
     }
     std::filesystem::path txtPath = destiny.parent_path() / (destiny.stem().string() + ".txt"); // Para crear el txt legible en la ruta correcta
     binarioATxt(destiny.string(), txtPath.string());

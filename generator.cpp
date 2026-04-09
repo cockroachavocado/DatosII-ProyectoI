@@ -14,9 +14,9 @@ int main(int argc, char* argv[]) {
 
         if (arg == "-size" && i + 1 < argc) {
             size = argv[++i];
-            if (size == "SMALL") enteros = 67108864;
-            else if (size == "MEDIUM") enteros = 134217728;
-            else if (size == "LARGE") enteros = 268435456;
+            if (size == "SMALL") enteros = 8388608;
+            else if (size == "MEDIUM") enteros = 16777216;
+            else if (size == "LARGE") enteros = 33554432;
             else
             {
                 std::cout << "Error, tamano no valido";
